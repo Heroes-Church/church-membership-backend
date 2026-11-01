@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class FamilyGroup extends Model
+{
+    protected $fillable = [
+        'name',
+    ];
+
+    public function members(): HasMany
+    {
+        return $this->hasMany(MemberProfile::class);
+    }
+}
