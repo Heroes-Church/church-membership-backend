@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ChurchSettingsController;
 use App\Http\Controllers\Api\FamilyGroupController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
+    Route::get('church-settings', [ChurchSettingsController::class, 'show']);
+
     Route::prefix('auth')->group(function (): void {
         Route::post('register', [AuthController::class, 'register'])
             ->middleware('throttle:auth-register');
@@ -25,6 +28,9 @@ Route::prefix('v1')->group(function (): void {
     });
 
     Route::middleware('auth:sanctum')->group(function (): void {
+        Route::patch('church-settings', [ChurchSettingsController::class, 'update'])
+            ->middleware('permission:settings.manage');
+
         Route::prefix('auth')->group(function (): void {
             Route::post('logout', [AuthController::class, 'logout']);
             Route::get('me', [AuthController::class, 'me']);

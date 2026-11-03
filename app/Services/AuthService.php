@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
+use App\Support\CurrentChurch;
 
 class AuthService
 {
@@ -211,12 +212,12 @@ class AuthService
     }
 
     private function otpCacheKey(string $email): string
-    {
-        return 'auth_otp:'.strtolower($email);
-    }
+        {
+            return 'auth_otp:'.app(CurrentChurch::class)->id().':'.strtolower($email);
+        }
 
-    private function otpAttemptsCacheKey(string $email): string
-    {
-        return 'auth_otp_attempts:'.strtolower($email);
-    }
+        private function otpAttemptsCacheKey(string $email): string
+        {
+            return 'auth_otp_attempts:'.app(CurrentChurch::class)->id().':'.strtolower($email);
+        }
 }

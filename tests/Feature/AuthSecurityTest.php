@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
+use App\Support\CurrentChurch;
 
 class AuthSecurityTest extends TestCase
 {
@@ -41,7 +42,7 @@ class AuthSecurityTest extends TestCase
         $mail = Mail::sent(VerificationCodeMail::class)->first();
         $this->assertNotNull($mail);
 
-        $hashedOtp = Cache::get('auth_otp:'.$email);
+        $hashedOtp = Cache::get('auth_otp:'.app(CurrentChurch::class)->id().':'.$email);
         $this->assertIsString($hashedOtp);
         $this->assertTrue(Hash::check($mail->otp, $hashedOtp));
 
@@ -52,7 +53,7 @@ class AuthSecurityTest extends TestCase
             ->assertJsonStructure(['token', 'user']);
 
         $this->assertNotNull($user->fresh()->email_verified_at);
-        $this->assertNull(Cache::get('auth_otp:'.$email));
+        $this->assertNull(Cache::get('auth_otp:'.app(CurrentChurch::class)->id().':'.$email));
     }
 
     public function test_unverified_user_cannot_login(): void
@@ -91,7 +92,7 @@ class AuthSecurityTest extends TestCase
                 ->assertJsonValidationErrors('otp');
         }
 
-        $this->assertNull(Cache::get('auth_otp:'.$email));
+        $this->assertNull(Cache::get('auth_otp:'.app(CurrentChurch::class)->id().':'.$email));
 
         $this->postJson('/api/v1/auth/verify-otp', [
             'email' => $email,

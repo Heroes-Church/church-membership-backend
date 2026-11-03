@@ -23,6 +23,8 @@ class RolePermissionSeeder extends Seeder
             'members.update',
             'family-groups.view',
             'family-groups.manage',
+            'settings.manage',
+            'attendance.manage'
         ])->map(
             fn (string $name): Permission => Permission::findOrCreate($name, 'web')
         );
@@ -54,6 +56,7 @@ class RolePermissionSeeder extends Seeder
             'members.update',
             'family-groups.view',
             'family-groups.manage',
+            'attendance.manage',
         ]);
         $member->syncPermissions([]);
         $guest->syncPermissions([]);

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use App\Models\User;
+use App\Support\CurrentChurch;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -30,7 +31,9 @@ class UpdateUserRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($user?->id),
+                Rule::unique('users', 'email')
+                    ->where('church_id', app(CurrentChurch::class)->id())
+                    ->ignore($user?->id),
             ],
             'password' => ['sometimes', 'nullable', 'string', Password::defaults()],
         ];

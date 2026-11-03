@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Concerns\BelongsToChurch;
 
 class MemberProfile extends Model
 {
+
+    use BelongsToChurch;
+    
     protected $fillable = [
         'user_id',
         'first_name',
