@@ -9,7 +9,7 @@ return [
     ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
-    'exposed_headers' => [],
+    'exposed_headers' => ['Retry-After', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
     'max_age' => 0,
     'supports_credentials' => false,
 ];

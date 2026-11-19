@@ -32,12 +32,18 @@ class AuthSecurityTest extends TestCase
             'name' => 'Guest Person',
             'email' => $email,
             'password' => 'Password123!',
-        ])->assertCreated();
+            'terms_accepted' => true,
+        ])->assertAccepted();
 
-        $this->assertDatabaseHas('users', ['email' => $email]);
-
-        $user = User::query()->where('email', $email)->firstOrFail();
-        $this->assertTrue($user->hasRole('Guest'));
+        $this->assertDatabaseMissing('users', ['email' => $email]);
+        $pendingRegistration = Cache::get(
+            'auth_pending_registration:'.app(CurrentChurch::class)->id().':'.$email
+        );
+        $this->assertIsArray($pendingRegistration);
+        $this->assertNotSame('Password123!', $pendingRegistration['password']);
+        $this->assertTrue(
+            Hash::check('Password123!', $pendingRegistration['password'])
+        );
 
         $mail = Mail::sent(VerificationCodeMail::class)->first();
         $this->assertNotNull($mail);
@@ -52,6 +58,8 @@ class AuthSecurityTest extends TestCase
         ])->assertOk()
             ->assertJsonStructure(['token', 'user']);
 
+        $user = User::query()->where('email', $email)->firstOrFail();
+        $this->assertTrue($user->hasRole('Guest'));
         $this->assertNotNull($user->fresh()->email_verified_at);
         $this->assertNull(Cache::get('auth_otp:'.app(CurrentChurch::class)->id().':'.$email));
     }
@@ -62,7 +70,12 @@ class AuthSecurityTest extends TestCase
             'name' => 'Unverified User',
             'email' => 'unverified@example.com',
             'password' => 'Password123!',
-        ])->assertCreated();
+            'terms_accepted' => true,
+        ])->assertAccepted();
+
+        $this->assertDatabaseMissing('users', [
+            'email' => 'unverified@example.com',
+        ]);
 
         $this->postJson('/api/v1/auth/login', [
             'email' => 'unverified@example.com',
@@ -79,7 +92,8 @@ class AuthSecurityTest extends TestCase
             'name' => 'OTP Test',
             'email' => $email,
             'password' => 'Password123!',
-        ])->assertCreated();
+            'terms_accepted' => true,
+        ])->assertAccepted();
 
         $mail = Mail::sent(VerificationCodeMail::class)->first();
         $this->assertNotNull($mail);
@@ -93,6 +107,7 @@ class AuthSecurityTest extends TestCase
         }
 
         $this->assertNull(Cache::get('auth_otp:'.app(CurrentChurch::class)->id().':'.$email));
+        $this->assertDatabaseMissing('users', ['email' => $email]);
 
         $this->postJson('/api/v1/auth/verify-otp', [
             'email' => $email,

@@ -19,22 +19,22 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = $this->authService->register($request->validated());
+        $email = $this->authService->register($request->validated());
 
         return response()->json([
-            'message' => 'Registration successful. OTP sent.',
-            'user' => new UserResource($user),
-        ], 201);
+            'message' => 'Verification code sent. Your account will be created after verification.',
+            'email' => $email,
+        ], 202);
     }
 
     public function registerMember(MemberRegisterRequest $request): JsonResponse
     {
-        $user = $this->authService->registerMember($request->validated());
+        $email = $this->authService->registerMember($request->validated());
 
         return response()->json([
-            'message' => 'Registration successful. OTP sent.',
-            'user' => new UserResource($user),
-        ], 201);
+            'message' => 'Verification code sent. Your account will be created after verification.',
+            'email' => $email,
+        ], 202);
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse

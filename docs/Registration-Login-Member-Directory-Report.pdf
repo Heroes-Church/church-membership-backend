@@ -1,0 +1,350 @@
+%PDF-1.4
+%HeroesCIMS report
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 4130 >>
+stream
+1.000 1.000 1.000 rg
+0 0 612 792 re f
+0.027 0.239 0.227 rg
+0 660 612 132 re f
+0.008 0.490 0.431 rg
+0 660 612 6 re f
+0.663 0.851 0.812 rg
+BT /F2 9 Tf 1 0 0 1 42 756 Tm (HEROESCIMS  /  IMPLEMENTATION REPORT) Tj ET
+1.000 1.000 1.000 rg
+BT /F2 25 Tf 1 0 0 1 42 716 Tm (Registration, Login &) Tj ET
+1.000 1.000 1.000 rg
+BT /F2 25 Tf 1 0 0 1 42 685 Tm (Member Directory) Tj ET
+0.839 0.906 0.890 rg
+BT /F1 10 Tf 1 0 0 1 42 669 Tm (Feature connection and verification summary) Tj ET
+0.443 0.522 0.541 rg
+BT /F2 8 Tf 1 0 0 1 42 630 Tm (STATUS) Tj ET
+0.902 0.957 0.937 rg
+42 597 93 24 re f
+0.008 0.490 0.431 rg
+BT /F2 9 Tf 1 0 0 1 53 606 Tm (COMPLETED) Tj ET
+0.251 0.329 0.353 rg
+BT /F1 10 Tf 1 0 0 1 151 613 Tm (The core registration, email verification, login, and member-directory flow) Tj ET
+0.251 0.329 0.353 rg
+BT /F1 10 Tf 1 0 0 1 151 598 Tm (is wired between the React frontend and Laravel API.) Tj ET
+0.863 0.906 0.898 RG
+1 w 42 577 m 570 577 l S
+0.008 0.490 0.431 rg
+BT /F2 10 Tf 1 0 0 1 42 547 Tm (01) Tj ET
+0.090 0.220 0.227 rg
+BT /F2 15 Tf 1 0 0 1 67 543 Tm (Registration & verification) Tj ET
+0.008 0.490 0.431 rg
+47 521 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 521 Tm (Member registration) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 505.5 Tm (Collects account, personal, and optional address details. After final review, the registration) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 491.5 Tm (request stages the details for OTP verification.) Tj ET
+0.008 0.490 0.431 rg
+47 469 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 469 Tm (Guest / first-time attendee) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 453.5 Tm (Uses the same reusable account fields and review components as member registration, with the) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 439.5 Tm (shorter Account Creation -> Final Review -> Verify Code flow.) Tj ET
+0.008 0.490 0.431 rg
+47 417 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 417 Tm (OTP verification) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 401.5 Tm (Verification code is emailed; no user account/profile is persisted until a valid code is) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 387.5 Tm (confirmed. Successful verification creates the account, assigns Guest role, and signs the user in.) Tj ET
+0.008 0.490 0.431 rg
+47 365 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 365 Tm (Retry and safeguards) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 349.5 Tm (Pending registration data uses a hashed password and expires with the OTP. Unverified users cannot) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 335.5 Tm (log in; invalid/expired codes and resend attempts are rate-limited.) Tj ET
+0.863 0.906 0.898 RG
+1 w 42 321 m 570 321 l S
+0.008 0.490 0.431 rg
+BT /F2 10 Tf 1 0 0 1 42 293 Tm (02) Tj ET
+0.090 0.220 0.227 rg
+BT /F2 15 Tf 1 0 0 1 67 289 Tm (Login) Tj ET
+0.008 0.490 0.431 rg
+47 267 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 267 Tm (API connection) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 251.5 Tm (Login submits email/password to the Laravel auth endpoint, displays API errors, stores the) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 237.5 Tm (returned Sanctum token, and routes the user to the dashboard.) Tj ET
+0.008 0.490 0.431 rg
+47 215 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 215 Tm (Verification requirement) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 199.5 Tm (The backend rejects sign-in for users whose email has not been verified.) Tj ET
+0.863 0.906 0.898 rg
+42 182 528 1 re f
+0.008 0.490 0.431 rg
+BT /F2 9 Tf 1 0 0 1 42 157 Tm (Important note) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 42 141.5 Tm (Password reset is not part of this connection yet; the current login screen directs users to contact) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 42 127.5 Tm (an administrator.) Tj ET
+0.863 0.906 0.898 RG
+0.8 w 42 37 m 570 37 l S
+0.443 0.522 0.541 rg
+BT /F1 8 Tf 1 0 0 1 42 19 Tm (Heroes Church Membership & Management System) Tj ET
+0.443 0.522 0.541 rg
+BT /F1 8 Tf 1 0 0 1 518 19 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 4708 >>
+stream
+1.000 1.000 1.000 rg
+0 0 612 792 re f
+0.027 0.239 0.227 rg
+0 708 612 84 re f
+0.663 0.851 0.812 rg
+BT /F2 9 Tf 1 0 0 1 42 759 Tm (HEROESCIMS  /  IMPLEMENTATION REPORT) Tj ET
+1.000 1.000 1.000 rg
+BT /F2 19 Tf 1 0 0 1 42 728 Tm (Directory, validation & scope) Tj ET
+0.008 0.490 0.431 rg
+0 708 612 6 re f
+0.008 0.490 0.431 rg
+BT /F2 10 Tf 1 0 0 1 42 672 Tm (03) Tj ET
+0.090 0.220 0.227 rg
+BT /F2 15 Tf 1 0 0 1 67 668 Tm (Member Directory) Tj ET
+0.008 0.490 0.431 rg
+47 646 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 646 Tm (Page and navigation) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 630.5 Tm (The /members route is present and linked from the dashboard navigation.) Tj ET
+0.008 0.490 0.431 rg
+47 608 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 608 Tm (Authenticated API request) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 592.5 Tm (The page reads the saved bearer token and requests the paginated member endpoint. It handles) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 578.5 Tm (loading, empty, unauthorized, forbidden, and API error states.) Tj ET
+0.008 0.490 0.431 rg
+47 556 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 556 Tm (Member-only results) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 540.5 Tm (The backend requires authentication and members.view permission, and returns users with the Member) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 526.5 Tm (role and an associated member profile. Guests are excluded until an Admin confirms membership and) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 512.5 Tm (promotes them.) Tj ET
+0.008 0.490 0.431 rg
+47 490 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 490 Tm (Pagination) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 474.5 Tm (The API returns 15 entries per page; the UI provides Previous/Next controls and displays the page) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 460.5 Tm (count.) Tj ET
+0.863 0.906 0.898 RG
+1 w 42 445 m 570 445 l S
+0.008 0.490 0.431 rg
+BT /F2 10 Tf 1 0 0 1 42 417 Tm (04) Tj ET
+0.090 0.220 0.227 rg
+BT /F2 15 Tf 1 0 0 1 67 413 Tm (Verification performed) Tj ET
+0.008 0.490 0.431 rg
+47 391 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 391 Tm (Backend automated tests) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 375.5 Tm (Full Laravel suite passed: 15 tests, 97 assertions. Coverage includes OTP) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 361.5 Tm (registration/verification, unverified login rejection, retry limits, registration profiles, and) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 347.5 Tm (relevant church settings.) Tj ET
+0.008 0.490 0.431 rg
+47 325 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 325 Tm (Frontend checks) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 309.5 Tm (ESLint passed and the Vite production build completed successfully.) Tj ET
+0.008 0.490 0.431 rg
+47 287 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 287 Tm (Browser flow check) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 271.5 Tm (Guest signup was checked through Account Creation, Final Review, and Verify Code; the email is) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 257.5 Tm (displayed without an editable email field.) Tj ET
+0.863 0.906 0.898 RG
+1 w 42 242 m 570 242 l S
+0.008 0.490 0.431 rg
+BT /F2 10 Tf 1 0 0 1 42 214 Tm (05) Tj ET
+0.090 0.220 0.227 rg
+BT /F2 15 Tf 1 0 0 1 67 210 Tm (Scope and limitations) Tj ET
+0.008 0.490 0.431 rg
+47 188 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 188 Tm (Completion assessment) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 172.5 Tm (The requested feature connection is implemented at the UI/API level. The member directory) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 158.5 Tm (intentionally lists confirmed Members, not all registered Guests.) Tj ET
+0.008 0.490 0.431 rg
+47 136 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 136 Tm (Live email delivery) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 120.5 Tm (Automated tests use a fake mailer. A real mailbox delivery and production-hosted end-to-end run) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 106.5 Tm (were not performed as part of this verification.) Tj ET
+0.008 0.490 0.431 rg
+47 84 5 5 re f
+0.090 0.220 0.227 rg
+BT /F2 10 Tf 1 0 0 1 62 84 Tm (Password reset) Tj ET
+0.322 0.392 0.416 rg
+BT /F1 9.5 Tf 1 0 0 1 62 68.5 Tm (Not implemented; remains a placeholder on the login screen.) Tj ET
+0.863 0.906 0.898 RG
+0.8 w 42 37 m 570 37 l S
+0.443 0.522 0.541 rg
+BT /F1 8 Tf 1 0 0 1 42 19 Tm (Heroes Church Membership & Management System) Tj ET
+0.443 0.522 0.541 rg
+BT /F1 8 Tf 1 0 0 1 518 19 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 3922 >>
+stream
+NaN 1.000 1.000 rg
+0 0 612 792 re f
+NaN 0.451 0.827 rg
+0 698 612 94 re f
+NaN 0.153 0.839 rg
+0 698 612 6 re f
+NaN 0.616 0.612 rg
+BT /F2 9 Tf 1 0 0 1 42 761 Tm (HEROESCIMS  /  REPORT ADDENDUM) Tj ET
+NaN 1.000 1.000 rg
+BT /F2 23 Tf 1 0 0 1 42 725 Tm (GitHub child work items) Tj ET
+NaN 0.431 0.494 rg
+BT /F1 8.5 Tf 1 0 0 1 42 710.5 Tm (Status based on the provided project-board screenshot and current repository evidence) Tj ET
+NaN 0.153 0.839 rg
+BT /F2 10 Tf 1 0 0 1 42 666 Tm (HCP-27) Tj ET
+NaN 0.435 0.306 rg
+479 656 91 22 re f
+NaN 0.153 0.839 rg
+BT /F2 8.5 Tf 1 0 0 1 489 664.5 Tm (COMPLETED) Tj ET
+NaN 0.451 0.514 rg
+BT /F2 15 Tf 1 0 0 1 42 644 Tm (Integrate registration, verification and login) Tj ET
+NaN 0.153 0.839 rg
+48 623 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 622.5 Tm (Member and guest registration are connected to the Laravel API; both continue to OTP verification.) Tj ET
+NaN 0.153 0.839 rg
+48 602 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 601.5 Tm (Account creation is deferred until a valid OTP is confirmed; verification returns an authentication) Tj ET
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 587.5 Tm (token.) Tj ET
+NaN 0.153 0.839 rg
+48 567 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 566.5 Tm (Login calls the API, stores the returned token, and the backend rejects unverified accounts.) Tj ET
+NaN 0.153 0.839 rg
+48 546 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 545.5 Tm (Evidence: Laravel test suite passed \(15 tests, 97 assertions\); frontend lint and production build) Tj ET
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 531.5 Tm (passed.) Tj ET
+NaN 0.808 0.494 RG 1 w 42 514 m 570 514 l S
+NaN 0.153 0.839 rg
+BT /F2 10 Tf 1 0 0 1 42 484 Tm (HCP-28) Tj ET
+NaN 1.000 0.114 rg
+478 474 92 22 re f
+NaN 0.647 0.690 rg
+BT /F2 8.5 Tf 1 0 0 1 488 482.5 Tm (PARTIAL) Tj ET
+NaN 0.451 0.514 rg
+BT /F2 15 Tf 1 0 0 1 42 462 Tm (Demonstrate member directory and family work*) Tj ET
+NaN 0.094 0.345 rg
+BT /F1 8.5 Tf 1 0 0 1 42 448.5 Tm (*The supplied screenshot truncates the work-item title after "family wor...".) Tj ET
+NaN 0.153 0.839 rg
+48 428 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 427.5 Tm (Member directory is implemented: dashboard link, /members route, authenticated paginated API) Tj ET
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 413.5 Tm (request, and loading/error/empty states.) Tj ET
+NaN 0.153 0.839 rg
+48 393 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 392.5 Tm (Directory results are restricted to users with the Member role and an associated member profile.) Tj ET
+NaN 0.153 0.839 rg
+48 372 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 371.5 Tm (Family-group backend API exists: list/show/create/update/delete groups and attach/detach member) Tj ET
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 357.5 Tm (profiles, protected by permissions.) Tj ET
+NaN 0.153 0.839 rg
+48 337 5 5 re f
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 336.5 Tm (Family-group frontend page/API integration and end-to-end demonstration are not present; no) Tj ET
+NaN 0.149 0.275 rg
+BT /F1 9.5 Tf 1 0 0 1 62 322.5 Tm (family-group feature tests were found. HCP-28 is therefore not fully done.) Tj ET
+NaN 0.122 0.498 rg
+42 221 528 86 re f
+NaN 0.153 0.839 rg
+BT /F2 8.5 Tf 1 0 0 1 56 288.5 Tm (REMAINING TO COMPLETE HCP-28) Tj ET
+NaN 0.020 0.271 rg
+BT /F1 9 Tf 1 0 0 1 56 272 Tm (Build and connect the Family Groups UI to the existing endpoints, then verify the authorized) Tj ET
+NaN 0.020 0.271 rg
+BT /F1 9 Tf 1 0 0 1 56 259 Tm (create/edit/delete and member attach/detach flows. Add focused backend feature tests and demonstrate) Tj ET
+NaN 0.020 0.271 rg
+BT /F1 9 Tf 1 0 0 1 56 246 Tm (the combined directory/family workflow.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 37 m 570 37 l S
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 42 19 Tm (Heroes Church Membership & Management System) Tj ET
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 518 19 Tm (Page 3 of 3) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000028 00000 n 
+0000000077 00000 n 
+0000000147 00000 n 
+0000000217 00000 n 
+0000000292 00000 n 
+0000004474 00000 n 
+0000004610 00000 n 
+0000009370 00000 n 
+0000009506 00000 n 
+0000013480 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+13617
+%%EOF

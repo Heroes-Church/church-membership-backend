@@ -26,7 +26,8 @@ class MemberRegisterRequest extends FormRequest
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')
-                    ->where('church_id', app(CurrentChurch::class)->id()),
+                    ->where('church_id', app(CurrentChurch::class)->id())
+                    ->whereNotNull('email_verified_at'),
             ],
             'password' => ['required', 'string', Password::defaults()],
             'first_name' => ['required', 'string', 'max:100'],

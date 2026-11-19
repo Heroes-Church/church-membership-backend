@@ -1,0 +1,188 @@
+%PDF-1.4
+%HeroesCIMS admin sidebar report
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Length 3806 >>
+stream
+NaN 0.451 0.827 rg 0 700 612 92 re f
+NaN 0.153 0.839 rg 0 700 612 6 re f
+NaN 0.616 0.612 rg
+BT /F2 8.5 Tf 1 0 0 1 42 766.5 Tm (HEROESCIMS  /  FRONTEND IMPLEMENTATION) Tj ET
+NaN 1.000 1.000 rg
+BT /F2 20 Tf 1 0 0 1 42 735 Tm (Admin Sidebar & Navigation) Tj ET
+NaN 0.431 0.494 rg
+BT /F1 8.5 Tf 1 0 0 1 42 718.5 Tm (Implementation overview  |  19 November 2026) Tj ET
+NaN 0.435 0.306 rg 42 662 95 22 re f
+NaN 0.153 0.839 rg
+BT /F2 8.5 Tf 1 0 0 1 52 670.5 Tm (IMPLEMENTED) Tj ET
+NaN 0.020 0.271 rg
+BT /F1 9.5 Tf 1 0 0 1 149 673.5 Tm (A role-aware sidebar now matches the supplied admin reference while keeping the) Tj ET
+NaN 0.020 0.271 rg
+BT /F1 9.5 Tf 1 0 0 1 149 659.5 Tm (dashboard topbar shared.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 645 m 570 645 l S
+NaN 0.451 0.514 rg
+BT /F2 13 Tf 1 0 0 1 42 617 Tm (Implementation) Tj ET
+NaN 0.153 0.839 rg 48 598 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 598.5 Tm (Modular components) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 585 Tm (Added AdminSidebar.jsx and filled the existing adminNavigation.js with grouped, config-driven menu) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 572 Tm (entries and Lucide icons.) Tj ET
+NaN 0.153 0.839 rg 48 551 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 551.5 Tm (User identity and controls) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 538 Tm (Sidebar displays the signed-in user name \(or initials fallback\), supports collapsing, marks the active) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 525 Tm (route, and keeps sections scrollable.) Tj ET
+NaN 0.153 0.839 rg 48 504 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 504.5 Tm (Role filtering) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 491 Tm (DashboardLayout.jsx requests the signed-in user from protected /api/v1/auth/me. Admin role selects the) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 478 Tm (admin sidebar; non-admin users keep a smaller role-appropriate menu.) Tj ET
+NaN 0.153 0.839 rg 48 457 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 457.5 Tm (Shared shell) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 444 Tm (The topbar and page content wrapper remain shared; the existing member sidebar is not reused for admin) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 431 Tm (links.) Tj ET
+NaN 0.153 0.839 rg 48 410 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 410.5 Tm (Safe placeholders) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 397 Tm (Only routes with existing pages are clickable. Planned modules are disabled rather than linking to) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 384 Tm (missing routes.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 370 m 570 370 l S
+NaN 0.451 0.514 rg
+BT /F2 13 Tf 1 0 0 1 42 342 Tm (Menu groups from the reference) Tj ET
+NaN 0.153 0.839 rg 48 322 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 322.5 Tm (Overview) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 309 Tm (Dashboard, Newcomers, Serving Requests, Attendance.) Tj ET
+NaN 0.153 0.839 rg 48 288 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 288.5 Tm (Community and Information) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 275 Tm (Members, Ministry, Lighthouse, Event, Announcements, Reports & Analytics.) Tj ET
+NaN 0.153 0.839 rg 48 254 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 254.5 Tm (Support and System) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 241 Tm (Messages, Counseling, ChatBot, Settings, Roles & Permission, Audit Logs.) Tj ET
+NaN 0.153 0.839 rg
+BT /F2 9 Tf 1 0 0 1 42 78 Tm (Active links today: Dashboard, Newcomers, Members, Settings.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 37 m 570 37 l S
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 42 18 Tm (Heroes Church Membership & Management System) Tj ET
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 522 18 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 3416 >>
+stream
+NaN 0.451 0.827 rg 0 700 612 92 re f
+NaN 0.153 0.839 rg 0 700 612 6 re f
+NaN 0.616 0.612 rg
+BT /F2 8.5 Tf 1 0 0 1 42 766.5 Tm (HEROESCIMS  /  FRONTEND IMPLEMENTATION) Tj ET
+NaN 1.000 1.000 rg
+BT /F2 20 Tf 1 0 0 1 42 735 Tm (Validation & Remaining Work) Tj ET
+NaN 0.431 0.494 rg
+BT /F1 8.5 Tf 1 0 0 1 42 718.5 Tm (Behavior checks, access boundaries, and unavailable modules) Tj ET
+NaN 0.451 0.514 rg
+BT /F2 13 Tf 1 0 0 1 42 668 Tm (Validation performed) Tj ET
+NaN 0.153 0.839 rg 48 647 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 647.5 Tm (Lint and build) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 634 Tm (npm run lint passed and the Vite production build completed successfully.) Tj ET
+NaN 0.153 0.839 rg 48 613 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 613.5 Tm (Whitespace) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 600 Tm (git diff --check passed for the frontend worktree.) Tj ET
+NaN 0.153 0.839 rg 48 579 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 579.5 Tm (Browser role check) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 566 Tm (Mocked /auth/me as Admin and Guest: Admin saw the grouped admin menu and active links; Guest did not see) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 553 Tm (admin links.) Tj ET
+NaN 0.153 0.839 rg 48 532 5 5 re f
+NaN 0.451 0.514 rg
+BT /F2 9.5 Tf 1 0 0 1 62 532.5 Tm (Backend route check) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 519 Tm (Confirmed /api/v1/auth/me is protected by Sanctum middleware. Existing admin pages also perform role) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 62 506 Tm (checks; protected APIs use Laravel/Spatie middleware.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 492 m 570 492 l S
+NaN 0.451 0.514 rg
+BT /F2 13 Tf 1 0 0 1 42 462 Tm (Menu items still awaiting pages/routes) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9.5 Tf 1 0 0 1 42 442.5 Tm (Serving Requests, Attendance, Ministry, Lighthouse, Event, Announcements, Reports & Analytics,) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9.5 Tf 1 0 0 1 42 428.5 Tm (Messages, Counseling, ChatBot, Roles & Permission, and Audit Logs remain disabled placeholders because) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9.5 Tf 1 0 0 1 42 414.5 Tm (their frontend routes/pages are not currently implemented.) Tj ET
+NaN 1.000 0.494 rg 42 328 528 68 re f
+NaN 0.647 0.690 rg
+BT /F2 8.5 Tf 1 0 0 1 55 378.5 Tm (SECURITY NOTE) Tj ET
+NaN 0.329 0.886 rg
+BT /F1 9 Tf 1 0 0 1 55 363 Tm (Sidebar filtering improves navigation UX; it is not an authorization boundary. Keep route/page role) Tj ET
+NaN 0.329 0.886 rg
+BT /F1 9 Tf 1 0 0 1 55 350 Tm (checks and backend permission middleware in place for every protected operation.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 314 m 570 314 l S
+NaN 0.451 0.514 rg
+BT /F2 13 Tf 1 0 0 1 42 284 Tm (Files changed) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 42 266 Tm (src/components/admin/AdminSidebar.jsx - admin-only sidebar component and collapse control.) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 42 248 Tm (src/components/admin/adminNavigation.js - grouped navigation configuration.) Tj ET
+NaN 0.212 0.400 rg
+BT /F1 9 Tf 1 0 0 1 42 230 Tm (src/components/layout/DashboardLayout.jsx - role lookup, admin/member sidebar selection, and shared topbar.) Tj ET
+NaN 0.808 0.494 RG 0.8 w 42 37 m 570 37 l S
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 42 18 Tm (Heroes Church Membership & Management System) Tj ET
+NaN 0.094 0.345 rg
+BT /F1 8 Tf 1 0 0 1 522 18 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000042 00000 n 
+0000000091 00000 n 
+0000000154 00000 n 
+0000000224 00000 n 
+0000000299 00000 n 
+0000004157 00000 n 
+0000004293 00000 n 
+0000007761 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7897
+%%EOF

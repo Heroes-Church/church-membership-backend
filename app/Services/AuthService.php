@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Mail\VerificationCodeMail;
-use App\Models\MemberProfile;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -21,14 +20,16 @@ class AuthService
     /**
      * @param  array{name:string,email:string,password:string}  $data
      */
-    public function register(array $data): User
+    public function register(array $data): string
     {
-        $user = User::query()->create($data);
-        $user->assignRole('Guest');
+        $this->stageRegistration([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'member_profile' => null,
+        ]);
 
-        $this->sendOtp($user);
-
-        return $user;
+        return $data['email'];
     }
 
     /**
@@ -48,23 +49,17 @@ class AuthService
      *     zip_code?:string|null
      * } $data
      */
-    public function registerMember(array $data): User
+    public function registerMember(array $data): string
     {
-        $user = DB::transaction(function () use ($data): User {
-            $user = User::query()->create([
-                'name' => implode(' ', array_filter([
-                    $data['first_name'],
-                    $data['middle_name'] ?? null,
-                    $data['last_name'],
-                ])),
-                'email' => $data['email'],
-                'password' => $data['password'],
-            ]);
-
-            $user->assignRole('Guest');
-
-            MemberProfile::query()->create([
-                'user_id' => $user->id,
+        $this->stageRegistration([
+            'name' => implode(' ', array_filter([
+                $data['first_name'],
+                $data['middle_name'] ?? null,
+                $data['last_name'],
+            ])),
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'member_profile' => [
                 'first_name' => $data['first_name'],
                 'middle_name' => $data['middle_name'] ?? null,
                 'last_name' => $data['last_name'],
@@ -76,14 +71,10 @@ class AuthService
                 'barangay' => $data['barangay'] ?? null,
                 'street_address' => $data['street_address'] ?? null,
                 'zip_code' => $data['zip_code'] ?? null,
-            ]);
+            ],
+        ]);
 
-            return $user;
-        });
-
-        $this->sendOtp($user);
-
-        return $user;
+        return $data['email'];
     }
 
     /**
@@ -122,6 +113,9 @@ class AuthService
      */
     public function verifyOtp(array $data): array
     {
+        $pendingRegistration = Cache::get(
+            $this->pendingRegistrationCacheKey($data['email'])
+        );
         $user = User::query()
             ->where('email', $data['email'])
             ->first();
@@ -130,7 +124,7 @@ class AuthService
         $attemptsKey = $this->otpAttemptsCacheKey($data['email']);
         $hashedOtp = Cache::get($otpKey);
 
-        if (! $user || ! is_string($hashedOtp)) {
+        if ((! $user && ! is_array($pendingRegistration)) || ! is_string($hashedOtp)) {
             $this->throwInvalidOtp();
         }
 
@@ -146,7 +140,50 @@ class AuthService
             Cache::forget($otpKey);
             Cache::forget($attemptsKey);
 
-            if (! $user->email_verified_at) {
+            if (is_array($pendingRegistration)) {
+                $user = DB::transaction(function () use ($data, $pendingRegistration): User {
+                    $user = User::query()
+                        ->where('email', $data['email'])
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($user && $user->email_verified_at) {
+                        throw ValidationException::withMessages([
+                            'email' => ['This email address is already in use.'],
+                        ]);
+                    }
+
+                    if ($user) {
+                        $user->update([
+                            'name' => $pendingRegistration['name'],
+                            'password' => $pendingRegistration['password'],
+                        ]);
+                    } else {
+                        $user = User::query()->create([
+                            'name' => $pendingRegistration['name'],
+                            'email' => $pendingRegistration['email'],
+                            'password' => $pendingRegistration['password'],
+                        ]);
+                    }
+
+                    $user->syncRoles(['Guest']);
+
+                    if (is_array($pendingRegistration['member_profile'])) {
+                        $user->memberProfile()->updateOrCreate(
+                            [],
+                            $pendingRegistration['member_profile']
+                        );
+                    } else {
+                        $user->memberProfile()->delete();
+                    }
+
+                    $user->forceFill(['email_verified_at' => now()])->save();
+
+                    return $user;
+                });
+
+                Cache::forget($this->pendingRegistrationCacheKey($data['email']));
+            } elseif (! $user->email_verified_at) {
                 $user->forceFill(['email_verified_at' => now()])->save();
             }
 
@@ -168,6 +205,16 @@ class AuthService
 
     public function resendOtp(string $email): void
     {
+        $pendingRegistration = Cache::get(
+            $this->pendingRegistrationCacheKey($email)
+        );
+
+        if (is_array($pendingRegistration)) {
+            $this->sendOtp($email);
+
+            return;
+        }
+
         $user = User::query()
             ->where('email', $email)
             ->first();
@@ -176,7 +223,7 @@ class AuthService
             return;
         }
 
-        $this->sendOtp($user);
+        $this->sendOtp($user->email);
     }
 
     public function logout(User $user): void
@@ -184,24 +231,38 @@ class AuthService
         $user->currentAccessToken()?->delete();
     }
 
-    private function sendOtp(User $user): void
+    private function stageRegistration(array $registration): void
+    {
+        $email = $registration['email'];
+        $registration['password'] = Hash::make($registration['password']);
+
+        Cache::put(
+            $this->pendingRegistrationCacheKey($email),
+            $registration,
+            now()->addMinutes(self::OTP_TTL_MINUTES)
+        );
+
+        $this->sendOtp($email);
+    }
+
+    private function sendOtp(string $email): void
     {
         $otp = (string) random_int(100000, 999999);
         $expiresAt = now()->addMinutes(self::OTP_TTL_MINUTES);
 
         Cache::put(
-            $this->otpCacheKey($user->email),
+            $this->otpCacheKey($email),
             Hash::make($otp),
             $expiresAt
         );
 
         Cache::put(
-            $this->otpAttemptsCacheKey($user->email),
+            $this->otpAttemptsCacheKey($email),
             0,
             $expiresAt
         );
 
-        Mail::to($user->email)->send(new VerificationCodeMail($otp));
+        Mail::to($email)->send(new VerificationCodeMail($otp));
     }
 
     private function throwInvalidOtp(): never
@@ -219,5 +280,10 @@ class AuthService
         private function otpAttemptsCacheKey(string $email): string
         {
             return 'auth_otp_attempts:'.app(CurrentChurch::class)->id().':'.strtolower($email);
+        }
+
+        private function pendingRegistrationCacheKey(string $email): string
+        {
+            return 'auth_pending_registration:'.app(CurrentChurch::class)->id().':'.strtolower($email);
         }
 }
