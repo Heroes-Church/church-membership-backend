@@ -88,19 +88,48 @@ class RegistrationTest extends TestCase
             ->assertJsonPath('data.date_of_birth', '1990-05-10');
     }
 
+    
     public function test_admin_can_change_guest_role_to_member(): void
     {
+        // Arrange: Create an Admin.
         $admin = User::factory()->create();
         $admin->assignRole('Admin');
 
-        $guest = User::factory()->create();
+        // Arrange: Create a verified Guest.
+        $guest = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
         $guest->assignRole('Guest');
 
+        // Arrange: Provide the required member profile.
+        $guest->memberProfile()->create([
+            'first_name' => 'Juan',
+            'middle_name' => 'Santos',
+            'last_name' => 'Dela Cruz',
+            'date_of_birth' => '2000-05-10',
+            'phone_number' => '+639171234567',
+            'gender' => 'Male',
+            'province' => 'Metro Manila',
+            'city_municipality' => 'Taguig',
+            'barangay' => 'Fort Bonifacio',
+            'street_address' => 'Sample Street',
+            'zip_code' => '1630',
+        ]);
+
+        // Act: Admin approves Guest promotion.
         $this->actingAs($admin, 'sanctum')
-            ->patchJson("/api/v1/users/{$guest->id}/role", ['role' => 'Member', 'membership_class_attended' => true])
+            ->patchJson("/api/v1/users/{$guest->id}/role", [
+                'role' => 'Member',
+                'membership_class_attended' => true,
+            ])
             ->assertOk()
             ->assertJsonPath('user.roles.0', 'Member');
 
-        $this->assertTrue($guest->fresh()->hasRole('Member'));
+        // Assert: User now has Member role.
+        $this->assertTrue(
+            $guest->fresh()->hasRole('Member')
+        );
     }
+
 }

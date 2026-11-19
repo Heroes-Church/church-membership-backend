@@ -84,6 +84,6 @@ Route::prefix('v1')->group(function (): void {
             ->middleware('permission:roles.manage');
 
         Route::get('users/{user}/member-profile', [UserController::class, 'memberProfile'])
-            ->middleware('permission:roles.manage');
+            ->middleware('permission:members.view');
     });
 });

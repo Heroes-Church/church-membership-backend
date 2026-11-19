@@ -12,6 +12,8 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -53,17 +55,105 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function updateRole(UpdateUserRoleRequest $request, User $user): JsonResponse
+    public function updateRole(UpdateUserRoleRequest $request, User $user): JsonResponse 
     {
-        $user->syncRoles([$request->validated('role')]);
+        $actor = $request->user(); 
+        $newRole = $request->validated('role');
+
+        // RULE 1: Users cannot change their own role.
+        abort_if(
+            $actor->is($user),
+            403,
+            'You cannot change your own role.'
+        );
+
+        // RULE 2: Prevent cross-church role changes.
+        abort_unless(
+            $actor->church_id === $user->church_id,
+            404
+        );
+
+        // RULE 3: Superadmin accounts are protected.
+        // Provisioning and recovery must use a separate
+        // trusted administrative process.
+        abort_if(
+            $user->hasRole('Superadmin'),
+            403,
+            'Superadmin accounts cannot be modified here.'
+        );
+
+        // RULE 4: Only Superadmin can assign Admin
+        // or change an existing Admin account's role.
+        if (
+            $newRole === 'Admin' ||
+            $user->hasRole('Admin')
+        ) {
+            abort_unless(
+                $actor->hasRole('Superadmin'),
+                403,
+                'Only Superadmin can manage Admin roles.'
+            );
+        }
+
+        // RULE 5: Member/Leader accounts must
+        // have a verified email and member profile.
+        if (in_array($newRole, ['Member', 'Leader'], true)) {
+            abort_unless(
+                $user->email_verified_at !== null,
+                422,
+                'Email verification is required.'
+            );
+
+            abort_unless(
+                $user->memberProfile()->exists(),
+                422,
+                'A member profile is required.'
+            );
+        }
+
+        // RULE 6: Save role changes atomically.
+        DB::transaction(function () use ($user, $newRole): void {
+            // Lock the target user to serialize role changes.
+            $lockedUser = User::query()
+                ->whereKey($user->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            // Recheck the role under the lock.
+            abort_if(
+                $lockedUser->hasRole('Superadmin'),
+                403,
+                'Superadmin accounts cannot be modified here.'
+            );
+
+            // Prevent removing an Admin role if it is
+            // the final Admin for this church.
+            if (
+                $lockedUser->hasRole('Admin') &&
+                $newRole !== 'Admin'
+            ) {
+                $adminCount = User::role('Admin')->count();
+
+                abort_if(
+                    $adminCount <= 1,
+                    422,
+                    'Cannot remove the last church Admin.'
+                );
+            }
+
+            $lockedUser->syncRoles([$newRole]);
+
+            // Revoke existing sessions after a role change.
+            $lockedUser->tokens()->delete();
+        });
 
         return response()->json([
             'message' => 'User role updated successfully.',
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->refresh()),
         ]);
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(User $user): Response
     {
         $this->userService->delete($user);
 

@@ -13,7 +13,7 @@ class RolePermissionSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $permissions = collect([
+        $permissionNames = [
             'users.view',
             'users.create',
             'users.update',
@@ -24,16 +24,67 @@ class RolePermissionSeeder extends Seeder
             'family-groups.view',
             'family-groups.manage',
             'settings.manage',
-            'attendance.manage'
-        ])->map(
-            fn (string $name): Permission => Permission::findOrCreate($name, 'web')
-        );
+            'attendance.manage',
 
+            // New permissions
+            'profile.view-own',
+            'profile.update-own',
+            'platform.manage',
+        ];
+
+        foreach ($permissionNames as $name) {
+            Permission::findOrCreate($name, 'web');
+        }
+
+        $superadmin = Role::findOrCreate('Superadmin', 'web');
         $admin = Role::findOrCreate('Admin', 'web');
         $leader = Role::findOrCreate('Leader', 'web');
         $member = Role::findOrCreate('Member', 'web');
         $guest = Role::findOrCreate('Guest', 'web');
 
+        // Superadmin: platform and church administration.
+        // Destructive deletion remains disabled.
+        $superadmin->syncPermissions(
+            array_values(array_diff(
+                $permissionNames,
+                ['users.delete']
+            ))
+        );
+
+        // Admin: church administration, not platform control.
+        $admin->syncPermissions([
+            'users.view',
+            'users.create',
+            'users.update',
+            'roles.manage',
+            'members.view',
+            'members.update',
+            'family-groups.view',
+            'family-groups.manage',
+            'settings.manage',
+            'attendance.manage',
+            'profile.view-own',
+            'profile.update-own',
+        ]);
+
+        // Leader: temporarily limited until assigned-group
+        // authorization is implemented and tested.
+        $leader->syncPermissions([
+            'profile.view-own',
+            'profile.update-own',
+        ]);
+
+        $member->syncPermissions([
+            'profile.view-own',
+            'profile.update-own',
+        ]);
+
+        $guest->syncPermissions([
+            'profile.view-own',
+            'profile.update-own',
+        ]);
+
+        // Migrate legacy Staff role assignments.
         $oldStaffRole = Role::query()
             ->where('name', 'Staff')
             ->where('guard_name', 'web')
@@ -47,18 +98,6 @@ class RolePermissionSeeder extends Seeder
             $oldStaffRole->delete();
         }
 
-        $admin->syncPermissions($permissions);
-        $leader->syncPermissions([
-            'users.view',
-            'users.create',
-            'users.update',
-            'members.view',
-            'members.update',
-            'family-groups.view',
-            'family-groups.manage',
-            'attendance.manage',
-        ]);
-        $member->syncPermissions([]);
-        $guest->syncPermissions([]);
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

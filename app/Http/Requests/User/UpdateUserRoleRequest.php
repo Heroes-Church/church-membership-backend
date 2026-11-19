@@ -9,7 +9,7 @@ class UpdateUserRoleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('roles.manage') ?? false;
     }
 
     /**
@@ -21,8 +21,14 @@ class UpdateUserRoleRequest extends FormRequest
             'role' => [
                 'required',
                 'string',
-                Rule::in(['Admin', 'Leader', 'Member', 'Guest']),
+                Rule::in([
+                    'Admin',
+                    'Leader',
+                    'Member',
+                    'Guest',
+                ]),
             ],
+
             'membership_class_attended' => [
                 'exclude_unless:role,Member',
                 'required',
