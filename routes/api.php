@@ -51,7 +51,7 @@ Route::prefix('v1')->group(function (): void {
 
         Route::middleware('permission:family-groups.manage')->group(function (): void {
             Route::post('family-groups', [FamilyGroupController::class, 'store']);
-            Route::put('family-groups/{familyGroup}', [FamilyGroupController::class, 'update']);
+            Route::match(['put', 'patch'], 'family-groups/{familyGroup}', [FamilyGroupController::class, 'update']);
             Route::delete('family-groups/{familyGroup}', [FamilyGroupController::class, 'destroy']);
 
             Route::post(
