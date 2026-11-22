@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\FamilyGroupController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AttendanceSessionController;
 
 Route::prefix('v1')->group(function (): void {
     Route::get('church-settings', [ChurchSettingsController::class, 'show']);
@@ -51,7 +52,7 @@ Route::prefix('v1')->group(function (): void {
 
         Route::middleware('permission:family-groups.manage')->group(function (): void {
             Route::post('family-groups', [FamilyGroupController::class, 'store']);
-            Route::put('family-groups/{familyGroup}', [FamilyGroupController::class, 'update']);
+            Route::match(['put', 'patch'], 'family-groups/{familyGroup}', [FamilyGroupController::class, 'update']);
             Route::delete('family-groups/{familyGroup}', [FamilyGroupController::class, 'destroy']);
 
             Route::post(
@@ -85,5 +86,40 @@ Route::prefix('v1')->group(function (): void {
 
         Route::get('users/{user}/member-profile', [UserController::class, 'memberProfile'])
             ->middleware('permission:members.view');
+
+        Route::middleware('permission:attendance.manage')
+            ->prefix('attendance/sessions')
+            ->group(function (): void {
+
+                Route::get(
+                    '/',
+                    [AttendanceSessionController::class, 'index']
+                );
+
+                Route::post(
+                    '/',
+                    [AttendanceSessionController::class, 'store']
+                );
+
+                Route::get(
+                    '{attendanceSession}',
+                    [AttendanceSessionController::class, 'show']
+                );
+
+                Route::get(
+                    '{attendanceSession}/records',
+                    [AttendanceSessionController::class, 'records']
+                );
+
+                Route::post(
+                    '{attendanceSession}/check-ins',
+                    [AttendanceSessionController::class, 'checkIn']
+                );
+
+                Route::patch(
+                    '{attendanceSession}/close',
+                    [AttendanceSessionController::class, 'close']
+                );
+            });
     });
 });

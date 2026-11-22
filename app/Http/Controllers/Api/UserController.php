@@ -14,9 +14,60 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    private function authorizeAccountUpdate(
+        Request $request,
+        User $target
+    ): void{
+        $actor = $request->user();
+        
+        abort_unless($actor !== null &&  $actor-> hasAnyRole(['Admin', 'Superadmin']),
+            403, 'Only authorized administrators can manage accounts.'
+        );
+
+        abort_unless((int) $actor->church_id === (int) $target->church_id,
+            404,
+            'User not found.'
+        );
+
+        abort_if($target->hasRole('Superadmin'),
+            403, 'Superadmin accounts cannot be updated here.'
+        );
+
+        abort_if($target->hasRole('Admin') && ! $actor->hasRole('Superadmin'),
+            403, 'Only a Superadmin can update Admin accounts.'
+        );
+    }
+
+    private function authorizeAccountView(
+        Request $request,
+        User $target
+    ): void {
+        $actor = $request->user();
+
+        abort_unless($actor !== null, 401);
+
+        abort_unless((int) $actor->church_id === (int) $target->church_id,
+            404,
+            'User not found.'    
+        );
+
+        if($target->hasRole('Superadmin')){
+            abort_unless($actor->hasRole('Superadmin'),
+                403
+            );
+        }
+        if($target->hasRole('Admin')){
+            abort_unless(
+                $actor->hasAnyRole(['Admin', 'Superadmin']),
+                403
+            );
+        }
+    }
+
     public function __construct(private readonly UserService $userService) {}
 
     public function all(): AnonymousResourceCollection
@@ -31,6 +82,12 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): JsonResponse
     {
+        $actor = $request->user();
+        
+        abort_unless($actor !== null && $actor->hasAnyRole(['Admin', 'Superadmin']),
+            403, 'Only administrators can create accounts.'
+        );
+
         $user = $this->userService->create($request->validated());
 
         return (new UserResource($user))
@@ -38,21 +95,27 @@ class UserController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show(User $user): UserResource
+    public function show(Request $request, User $user): UserResource
     {
+        $this->authorizeAccountView($request, $user);
+
         return new UserResource($user);
     }
 
-    public function memberProfile(User $user): MemberProfileResource
+    public function memberProfile(Request $request, User $user): MemberProfileResource
     {
+        $this->authorizeAccountView($request, $user);
+        
         return new MemberProfileResource($user->memberProfile()->firstOrFail());
     }
 
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
-        $user = $this->userService->update($user, $request->validated());
+        $this->authorizeAccountUpdate($request, $user);
 
-        return new UserResource($user);
+        $updatedUser = $this->userService->update($user, $request->validated());
+
+        return new UserResource($updatedUser);
     }
 
     public function updateRole(UpdateUserRoleRequest $request, User $user): JsonResponse 
@@ -153,9 +216,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user): Response
+    public function destroy(Request $request, User $user): Response
     {
-        $this->userService->delete($user);
+        $this->authorizeAccountUpdate($request , $user);
+
+        $this->userService->delete($user);  
 
         return response()->noContent();
     }

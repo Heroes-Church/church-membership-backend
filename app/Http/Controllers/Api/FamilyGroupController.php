@@ -9,8 +9,10 @@ use App\Http\Requests\FamilyGroup\UpdateFamilyGroupRequest;
 use App\Http\Resources\FamilyGroupResource;
 use App\Models\FamilyGroup;
 use App\Models\MemberProfile;
+use App\Support\CurrentChurch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class FamilyGroupController extends Controller
 {
@@ -24,18 +26,23 @@ class FamilyGroupController extends Controller
         return FamilyGroupResource::collection($familyGroups);
     }
 
-    public function store(StoreFamilyGroupRequest $request): JsonResponse
-    {
-        $familyGroup = FamilyGroup::query()->create($request->validated());
+    public function store(
+        StoreFamilyGroupRequest $request
+    ): JsonResponse {
+        $familyGroup = FamilyGroup::query()
+            ->create($request->validated());
 
-        return (new FamilyGroupResource($familyGroup->load('members')))
-            ->response()
-            ->setStatusCode(201);
+        return (new FamilyGroupResource(
+            $familyGroup->load('members')
+        ))->response()->setStatusCode(201);
     }
 
-    public function show(FamilyGroup $familyGroup): FamilyGroupResource
-    {
-        return new FamilyGroupResource($familyGroup->load('members'));
+    public function show(
+        FamilyGroup $familyGroup
+    ): FamilyGroupResource {
+        return new FamilyGroupResource(
+            $familyGroup->load('members')
+        );
     }
 
     public function update(
@@ -44,15 +51,19 @@ class FamilyGroupController extends Controller
     ): FamilyGroupResource {
         $familyGroup->update($request->validated());
 
-        return new FamilyGroupResource($familyGroup->load('members'));
+        return new FamilyGroupResource(
+            $familyGroup->load('members')
+        );
     }
 
-    public function destroy(FamilyGroup $familyGroup): JsonResponse
-    {
+    public function destroy(
+        FamilyGroup $familyGroup
+    ): JsonResponse {
         $familyGroup->delete();
 
         return response()->json([
-            'message' => 'Family group deleted. Member profiles were kept.',
+            'message' =>
+                'Family group deleted. Member profiles were kept.',
         ]);
     }
 
@@ -60,42 +71,101 @@ class FamilyGroupController extends Controller
         AttachFamilyMemberRequest $request,
         FamilyGroup $familyGroup
     ): FamilyGroupResource {
-        $profile = MemberProfile::query()
-            ->with('user')
-            ->findOrFail($request->validated('member_profile_id'));
+        $churchId = app(CurrentChurch::class)->id();
+        $profileId = $request->integer('member_profile_id');
 
-        abort_unless(
-            $profile->user?->hasRole('Member'),
-            422,
-            'Only users with the Member role can be added to a family group.'
+        DB::transaction(function () use (
+            $familyGroup,
+            $churchId,
+            $profileId
+        ): void {
+            // Lock the member profile during assignment.
+            $profile = MemberProfile::query()
+                ->where('church_id', $churchId)
+                ->whereKey($profileId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            // Explicitly verify the destination family.
+            abort_unless(
+                (int) $familyGroup->church_id === $churchId,
+                404,
+                'Family group not found.'
+            );
+
+            // A profile must belong to a user in this church.
+            $user = $profile->user;
+
+            abort_unless(
+                $user !== null
+                    && (int) $user->church_id === $churchId,
+                422,
+                'Member account does not belong to this church.'
+            );
+
+            abort_unless(
+                $user->hasRole('Member'),
+                422,
+                'Only users with the Member role can be added '
+                    . 'to a family group.'
+            );
+
+            // Reject reassignment from an existing family.
+            abort_if(
+                $profile->family_group_id !== null
+                    && (int) $profile->family_group_id
+                        !== (int) $familyGroup->id,
+                422,
+                'This member already belongs to another '
+                    . 'family group.'
+            );
+
+            $profile->family_group_id = $familyGroup->id;
+            $profile->save();
+        });
+
+        return new FamilyGroupResource(
+            $familyGroup->load('members')
         );
-
-        abort_if(
-            $profile->family_group_id !== null
-                && $profile->family_group_id !== $familyGroup->id,
-            422,
-            'This member already belongs to another family group.'
-        );
-
-        $profile->family_group_id = $familyGroup->id;
-        $profile->save();
-
-        return new FamilyGroupResource($familyGroup->load('members'));
     }
 
     public function detachMember(
         FamilyGroup $familyGroup,
         MemberProfile $memberProfile
     ): FamilyGroupResource {
-        abort_unless(
-            $memberProfile->family_group_id === $familyGroup->id,
-            404,
-            'This profile does not belong to this family group.'
+        $churchId = app(CurrentChurch::class)->id();
+
+        DB::transaction(function () use (
+            $familyGroup,
+            $memberProfile,
+            $churchId
+        ): void {
+            $profile = MemberProfile::query()
+                ->where('church_id', $churchId)
+                ->whereKey($memberProfile->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            abort_unless(
+                (int) $familyGroup->church_id === $churchId,
+                404,
+                'Family group not found.'
+            );
+
+            abort_unless(
+                (int) $profile->family_group_id
+                    === (int) $familyGroup->id,
+                404,
+                'This profile does not belong '
+                    . 'to this family group.'
+            );
+
+            $profile->family_group_id = null;
+            $profile->save();
+        });
+
+        return new FamilyGroupResource(
+            $familyGroup->load('members')
         );
-
-        $memberProfile->family_group_id = null;
-        $memberProfile->save();
-
-        return new FamilyGroupResource($familyGroup->load('members'));
     }
 }
