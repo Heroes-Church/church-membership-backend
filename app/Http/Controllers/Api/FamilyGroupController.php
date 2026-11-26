@@ -59,7 +59,13 @@ class FamilyGroupController extends Controller
     public function destroy(
         FamilyGroup $familyGroup
     ): JsonResponse {
-        $familyGroup->delete();
+        DB::transaction(function () use ($familyGroup): void {
+            $group = FamilyGroup::query()->lockForUpdate()->findOrFail($familyGroup->id);
+            $group->head_member_id = null;
+            $group->save();
+            $group->members()->update(['family_group_id' => null]);
+            $group->delete();
+        });
 
         return response()->json([
             'message' =>
@@ -160,6 +166,8 @@ class FamilyGroupController extends Controller
                     . 'to this family group.'
             );
 
+            FamilyGroup::query()->whereKey($familyGroup->id)
+                ->where('head_member_id', $profile->id)->update(['head_member_id' => null]);
             $profile->family_group_id = null;
             $profile->save();
         });

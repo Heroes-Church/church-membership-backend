@@ -25,7 +25,7 @@ class AttachFamilyMemberRequest extends FormRequest
             'member_profile_id' => [
                 'required',
                 'integer',
-                Rule::exists('member_profiles', 'id')
+                Rule::exists('members', 'id')
                     ->where('church_id', $churchId),
             ],
         ];

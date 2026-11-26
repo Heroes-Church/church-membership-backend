@@ -95,7 +95,7 @@ class FamilyGroupAuthorizationTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors('member_profile_id');
 
-        $this->assertDatabaseHas('member_profiles', [
+        $this->assertDatabaseHas('members', [
             'id' => $profile->id,
             'family_group_id' => null,
         ]);

@@ -57,3 +57,19 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Revision 6 core database upgrade
+
+Back up an existing database and run the upgrade on a copy first. Use maintenance
+mode and stop queue workers and other database writers throughout the upgrade.
+Run `php artisan migrate` from the backend directory. On a new installation, run
+the usual seeders after migrating. The identity conversion is forward-only. To
+revert after cutover, restore the pre-upgrade database and application together.
+
+Existing member profile and check-in IDs are retained. Each historical check-in
+is matched to a profile by church and user ID. Existing members start with the
+status **Unclassified**, independently of their account role. Historical sessions
+and requests that omit a service use **General service** for that church.
+Registration and profile requests still accept `phone_number`, and check-in
+requests still accept `user_id`. Run `php artisan test` to exercise both the API
+and the upgrade from populated legacy tables.
