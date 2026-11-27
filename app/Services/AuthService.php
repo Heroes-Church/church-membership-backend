@@ -102,6 +102,15 @@ class AuthService
             ]);
         }
 
+        if (! $user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => [
+                    'This account is inactive. '
+                    . 'Please contact the church administrator.',
+                ],
+            ]);
+        }
+
         if (! $user->email_verified_at) {
             throw ValidationException::withMessages([
                 'email' => ['Please verify your email address before signing in.'],
@@ -130,7 +139,11 @@ class AuthService
         $attemptsKey = $this->otpAttemptsCacheKey($data['email']);
         $hashedOtp = Cache::get($otpKey);
 
-        if (! $user || ! is_string($hashedOtp)) {
+        if (
+            ! $user
+            || ! $user->is_active
+            || ! is_string($hashedOtp)
+        ) {
             $this->throwInvalidOtp();
         }
 
@@ -172,7 +185,11 @@ class AuthService
             ->where('email', $email)
             ->first();
 
-        if (! $user || $user->email_verified_at) {
+        if (
+            ! $user
+            || ! $user->is_active
+            || $user->email_verified_at
+        ) {
             return;
         }
 

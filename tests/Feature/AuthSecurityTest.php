@@ -112,4 +112,114 @@ class AuthSecurityTest extends TestCase
 
         Mail::assertNothingSent();
     }
+
+    public function test_inactive_user_cannot_login(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'inactive@example.com',
+            'password' => 'Password123!',
+            'is_active' => false,
+        ]);
+
+        $response = $this->postJson(
+            '/api/v1/auth/login',
+            [
+                'email' => $user->email,
+                'password' => 'Password123!',
+            ]
+        );
+
+        $response
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('email')
+            ->assertJsonMissingPath('token');
+    }
+
+    public function test_inactive_user_cannot_access_protected_api(): void
+    {
+        $user = User::factory()->create([
+            'is_active' => true,
+        ]);
+
+        // Issue a real Sanctum token before deactivation.
+        $token = $user->createToken(
+            'auth-token'
+        )->plainTextToken;
+
+        // Simulate account deactivation.
+        $user->forceFill([
+            'is_active' => false,
+        ])->save();
+
+        $this->withToken($token)
+            ->getJson('/api/v1/auth/me')
+            ->assertForbidden();
+    }
+
+    public function test_inactive_user_cannot_verify_otp(): void
+    {
+        $email = 'inactive-otp@example.com';
+
+        $this->postJson('/api/v1/auth/register', [
+            'name' => 'Inactive OTP User',
+            'email' => $email,
+            'password' => 'Password123!',
+        ])->assertCreated();
+
+        $mail = Mail::sent(
+            VerificationCodeMail::class
+        )->first();
+
+        $this->assertNotNull($mail);
+
+        $user = User::query()
+            ->where('email', $email)
+            ->firstOrFail();
+
+        $user->forceFill([
+            'is_active' => false,
+        ])->save();
+
+        $this->postJson('/api/v1/auth/verify-otp', [
+            'email' => $email,
+            'otp' => $mail->otp,
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('otp')
+            ->assertJsonMissingPath('token');
+
+        $this->assertNull(
+            $user->fresh()->email_verified_at
+        );
+    }
+
+    public function test_inactive_user_cannot_resend_otp(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'inactive-resend@example.com',
+            'email_verified_at' => null,
+            'is_active' => false,
+        ]);
+
+        $this->postJson('/api/v1/auth/resend-otp', [
+            'email' => $user->email,
+        ])->assertAccepted();
+
+        Mail::assertNothingSent();
+    }
+
+    public function test_active_user_can_access_protected_api(): void
+    {
+        $user = User::factory()->create([
+            'is_active' => true,
+        ]);
+
+        $user->assignRole('Member');
+
+        $token = $user->createToken('test-token')->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/v1/auth/me')
+            ->assertOk();
+    }
 }

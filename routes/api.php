@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function (): void {
             ->middleware('throttle:auth-resend-otp');
     });
 
-    Route::middleware('auth:sanctum')->group(function (): void {
+    Route::middleware('auth:sanctum', 'account.active',)->group(function (): void {
         Route::patch('church-settings', [ChurchSettingsController::class, 'update'])
             ->middleware('permission:settings.manage');
 
