@@ -41,7 +41,8 @@ class RolePermissionSeeder extends Seeder
         $leader = Role::findOrCreate('Leader', 'web');
         $member = Role::findOrCreate('Member', 'web');
         $guest = Role::findOrCreate('Guest', 'web');
-
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        
         // Superadmin: platform and church administration.
         // Destructive deletion remains disabled.
         $superadmin->syncPermissions(
