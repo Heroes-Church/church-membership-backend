@@ -93,7 +93,7 @@ class AttendanceApiTest extends TestCase
 
         $this->assertDatabaseHas('attendance_records', [
             'attendance_session_id' => $session->id,
-            'user_id' => $member->id,
+            'member_id' => $member->memberProfile->id,
             'church_id' => $admin->church_id,
             'checked_in_by' => $admin->id,
             'check_in_method' => 'manual',
@@ -122,7 +122,7 @@ class AttendanceApiTest extends TestCase
             1,
             AttendanceRecord::query()
                 ->where('attendance_session_id', $session->id)
-                ->where('user_id', $member->id)
+                ->where('member_id', $member->memberProfile->id)
                 ->count()
         );
     }
@@ -168,7 +168,7 @@ class AttendanceApiTest extends TestCase
 
         $this->assertDatabaseMissing('attendance_records', [
             'attendance_session_id' => $session->id,
-            'user_id' => $member->id,
+            'member_id' => $member->memberProfile->id,
         ]);
     }
 
@@ -203,7 +203,7 @@ class AttendanceApiTest extends TestCase
 
         $this->assertDatabaseMissing('attendance_records', [
             'attendance_session_id' => $session->id,
-            'user_id' => $member->id,
+            'member_id' => $member->memberProfile->id,
         ]);
     }
 
@@ -226,7 +226,7 @@ class AttendanceApiTest extends TestCase
 
         $this->assertDatabaseMissing('attendance_records', [
             'attendance_session_id' => $session->id,
-            'user_id' => $member->id,
+            'member_id' => $member->memberProfile->id,
         ]);
     }
 
@@ -242,9 +242,7 @@ class AttendanceApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $member->forceFill([
-            'church_id' => $otherChurch->id,
-        ])->save();
+        $member = User::factory()->create(['church_id' => $otherChurch->id]);
 
         $this->actingAs($admin, 'sanctum')
             ->postJson(
@@ -256,7 +254,6 @@ class AttendanceApiTest extends TestCase
 
         $this->assertDatabaseMissing('attendance_records', [
             'attendance_session_id' => $session->id,
-            'user_id' => $member->id,
         ]);
     }
 

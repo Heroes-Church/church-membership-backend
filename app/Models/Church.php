@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Church extends Model
 {
+    protected static function booted(): void
+    {
+        static::created(function (self $church): void {
+            Service::query()->create(['church_id' => $church->id, 'name' => 'General service']);
+        });
+    }
+
     protected $fillable = [
         'name',
         'slug',

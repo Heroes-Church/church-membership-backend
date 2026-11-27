@@ -70,12 +70,12 @@ class RegistrationTest extends TestCase
 
         $this->assertSame('Juan Santos Dela Cruz', $user->name);
         $this->assertTrue($user->hasRole('Guest'));
-        $this->assertDatabaseHas('member_profiles', [
+        $this->assertDatabaseHas('members', [
             'user_id' => $user->id,
             'first_name' => 'Juan',
             'middle_name' => 'Santos',
             'last_name' => 'Dela Cruz',
-            'phone_number' => '+639171234567',
+            'contact_number' => '+639171234567',
             'zip_code' => '1630',
         ]);
 

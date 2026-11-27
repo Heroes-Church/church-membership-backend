@@ -12,7 +12,7 @@ class AttendanceRecord extends Model
 
     protected $fillable = [
         'attendance_session_id',
-        'user_id',
+        'member_id',
         'checked_in_by',
         'check_in_method',
         'checked_in_at',
@@ -30,9 +30,23 @@ class AttendanceRecord extends Model
         return $this->belongsTo(AttendanceSession::class, 'attendance_session_id');
     }
 
-    public function user(): BelongsTo
+    protected $appends = ['user_id', 'user'];
+
+    protected $hidden = ['member'];
+
+    public function getUserIdAttribute(): ?int
     {
-        return $this->belongsTo(User::class);
+        return $this->member?->user_id;
+    }
+
+    public function getUserAttribute(): ?User
+    {
+        return $this->member?->loadMissing('user:id,name,church_id')->user;
+    }
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(MemberProfile::class, 'member_id');
     }
 
     public function checkedInBy(): BelongsTo

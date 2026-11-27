@@ -37,6 +37,8 @@ class AttendanceSessionController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
+            'service_id' => ['sometimes', 'integer', Rule::exists('services', 'id')
+                ->where('church_id', app(CurrentChurch::class)->id())->where('is_active', true)],
             'title' => [
                 'required',
                 'string',
@@ -45,6 +47,7 @@ class AttendanceSessionController extends Controller
         ]);
 
         $session = AttendanceSession::query()->create([
+            'service_id' => $data['service_id'] ?? null,
             'title' => $data['title'],
             'status' => 'open',
             'started_at' => now(),
@@ -140,10 +143,10 @@ class AttendanceSessionController extends Controller
                     'Member email must be verified.'
                 );
 
+                $profile = $member->memberProfile()->where('church_id', $churchId)->first();
+
                 abort_unless(
-                    $member->memberProfile()
-                        ->where('church_id', $churchId)
-                        ->exists(),
+                    $profile !== null,
                     422,
                     'Member profile is required.'
                 );
@@ -153,7 +156,7 @@ class AttendanceSessionController extends Controller
                         'attendance_session_id',
                         $session->id
                     )
-                    ->where('user_id', $member->id)
+                    ->where('member_id', $profile->id)
                     ->exists();
 
                 abort_if(
@@ -163,7 +166,7 @@ class AttendanceSessionController extends Controller
                 );
 
                 return $session->records()->create([
-                    'user_id' => $member->id,
+                    'member_id' => $profile->id,
                     'checked_in_by' => $request->user()->id,
                     'check_in_method' => 'manual',
                     'checked_in_at' => now(),
@@ -186,7 +189,7 @@ class AttendanceSessionController extends Controller
         AttendanceSession $attendanceSession
     ): JsonResponse {
         $records = $attendanceSession->records()
-            ->with('user:id,name,church_id')
+            ->with('member.user:id,name,church_id')
             ->latest('checked_in_at')
             ->paginate(25);
 

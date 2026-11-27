@@ -71,9 +71,6 @@ class FamilyGroupAuthorizationTest extends TestCase
     public function test_cannot_attach_member_from_another_church(): void
     {
         $admin = $this->makeUser('Admin');
-        $member = $this->makeUser('Member');
-
-        $profile = $this->makeProfile($member);
         $family = $this->makeFamily();
 
         $otherChurch = Church::query()->create([
@@ -82,10 +79,15 @@ class FamilyGroupAuthorizationTest extends TestCase
             'is_active' => true,
         ]);
 
-        // Simulate a profile belonging to another church.
-        $profile->forceFill([
-            'church_id' => $otherChurch->id,
-        ])->save();
+        $originalSlug = config('church.default_slug');
+        config(['church.default_slug' => $otherChurch->slug]);
+
+        try {
+            $member = $this->makeUser('Member');
+            $profile = $this->makeProfile($member);
+        } finally {
+            config(['church.default_slug' => $originalSlug]);
+        }
 
         $this->actingAs($admin, 'sanctum')
             ->postJson(
@@ -95,7 +97,7 @@ class FamilyGroupAuthorizationTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors('member_profile_id');
 
-        $this->assertDatabaseHas('member_profiles', [
+        $this->assertDatabaseHas('members', [
             'id' => $profile->id,
             'family_group_id' => null,
         ]);

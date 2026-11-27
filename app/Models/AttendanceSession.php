@@ -11,7 +11,18 @@ class AttendanceSession extends Model
 {
     use BelongsToChurch;
 
+    protected static function booted(): void
+    {
+        static::creating(function (self $session): void {
+            if ($session->service_id === null) {
+                $session->service_id = Service::query()->where('church_id', $session->church_id)
+                    ->where('name', 'General service')->orderBy('id')->firstOrFail()->id;
+            }
+        });
+    }
+
     protected $fillable = [
+        'service_id',
         'title',
         'status',
         'started_at',
